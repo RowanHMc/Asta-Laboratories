@@ -1,5 +1,6 @@
-import { ChevronDown, FlaskConical, LayoutDashboard, Mail, Shield } from "lucide-react";
-import React from "react";
+import { useState } from "react";
+import { ArrowRight, ChevronDown, Eye, EyeOff, FlaskConical, LayoutDashboard, Lock, Mail, Shield } from "lucide-react";
+
 
 export default function Login() {
   const [portalType, setPortalType] = useState("student");
@@ -66,7 +67,7 @@ export default function Login() {
             <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div> 
           {/* form  */}
-          <form onSubmit={handeSubmit} className=" space-y-4">
+          <form onSubmit={handleSubmit} className=" space-y-4">
             <div>
                 <label className="block text-xs font-semibold text-slate-600 mb-1.5">
                     {isAdmin ? "Admin Email": "Academic Email"}
@@ -79,17 +80,88 @@ export default function Login() {
                     required
                     placeholder={
                         isAdmin
-                             ? "e.rostova@astalabs.org"
-                            : "s.jenkins@university.edu"}
-                    value={formData}
+                             ? "e.name@astalabs.org"
+                            : "s.mku@university.edu"}
+                    value={formData.email}
                     onChange={handleChange}
                     className="w-full pl-10 pr-4 py-2.5 text-sm bg-[#f8faf9] border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#064e3b] focus:border-transparent transition-all"
                       />                 
                 </div>
-
+                </div>
+                {/* password  */}
+                        <div>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  required
+                  minLength={8}
+                  placeholder="********"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-10 py-2.5 text-sm bg-[#f8faf9] border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#064e3b] focus:border-transparent transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
             </div>
+
+            
+            <div className="flex items-center justify-between text-xs pt-1">
+              <label className="flex items-center gap-2 cursor-pointer text-slate-500">
+                <input
+                  type="checkbox"
+                  name="rememberMe"
+                  checked={formData.rememberMe}
+                  onChange={handleChange}
+                  className="rounded border-slate-300 text-[#064e3b] focus:ring-[#064e3b]"
+                />
+                Remember Me
+              </label>
+              <a
+                href="#forgot"
+                className="font-semibold text-[#064e3b] hover:underline"
+              >
+                Forgot password?
+              </a>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full mt-2 py-2.5 px-4 bg-[#064e3b] hover:bg-[#04392b] text-white text-sm font-semibold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2"
+            >
+              <span>
+                {isAdmin ? "Sign In to Console" : "Sign In to Portal"}
+              </span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            
           </form>
+          {/* footer link  */}
+          <div className="mt-8 text-center text-xs text-slate-500">
+            Don't have an account?{" "}
+            <a
+              href="#register"
+              className="font-semibold text-[#064e3b] hover:underline"
+            >
+              Create Account
+            </a>
+          </div>
       </div>
+    </div>
     </div>
   );
 }
