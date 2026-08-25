@@ -10,6 +10,19 @@ export default function Login() {
     rememberMe: false,
   });
 
+  const handleChange = (e) => {
+    const{name, value, type, checked} = e.target;
+    setFormData((prev) => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value,
+    }));
+  }
+
+  const handleSubmit = (e) => {
+    e.prevenrDefault();
+    console.log(`[${portalType.toUpperCase()}LOGIN]`), formData;
+  }
+
   const isAdmin = portalType === "admin";
 
   return (
@@ -79,4 +92,4 @@ export default function Login() {
       </div>
     </div>
   );
-};
+}
