@@ -1,4 +1,4 @@
-import { FlaskConical } from "lucide-react";
+import { ChevronDown, FlaskConical, LayoutDashboard, Shield } from "lucide-react";
 import React from "react";
 
 export default function Login() {
@@ -32,8 +32,27 @@ export default function Login() {
             </p>
             </div>
             {/* admin or student  */}
-
+              <div>
+          <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+            Portal Type
+          </label>
+          <div className="relative">
+            {isAdmin ? (
+              <Shield className="w-4 h-4 text-[#064e3b] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            ) : (
+              <LayoutDashboard className="w-4 h-4 text-[#064e3b] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            )}
+           <select
+              value={portalType}
+              onChange={(e) => setPortalType(e.target.value)}
+              className="w-full pl-10 pr-10 py-2.5 text-sm font-semibold bg-[#f8faf9] border border-slate-200 text-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#064e3b] focus:border-transparent transition-all appearance-none cursor-pointer"
+            >
+              <option value="student">Student Portal</option>
+              <option value="admin">Admin</option>
+            </select>
+            <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          </div> 
       </div>
     </div>
   );
-}
+};
