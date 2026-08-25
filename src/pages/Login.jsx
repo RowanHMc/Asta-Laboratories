@@ -1,4 +1,4 @@
-import { ChevronDown, FlaskConical, LayoutDashboard, Shield } from "lucide-react";
+import { ChevronDown, FlaskConical, LayoutDashboard, Mail, Shield } from "lucide-react";
 import React from "react";
 
 export default function Login() {
@@ -52,6 +52,30 @@ export default function Login() {
             </select>
             <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div> 
+          {/* form  */}
+          <form onSubmit={handeSubmit} className=" space-y-4">
+            <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                    {isAdmin ? "Admin Email": "Academic Email"}
+                </label>
+                <div className="relative">
+                    <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"/>
+                    <input
+                    type="email"
+                    name="email"
+                    required
+                    placeholder={
+                        isAdmin
+                             ? "e.rostova@astalabs.org"
+                            : "s.jenkins@university.edu"}
+                    value={formData}
+                    onChange={handleChange}
+                    className="w-full pl-10 pr-4 py-2.5 text-sm bg-[#f8faf9] border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#064e3b] focus:border-transparent transition-all"
+                      />                 
+                </div>
+
+            </div>
+          </form>
       </div>
     </div>
   );
