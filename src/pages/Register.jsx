@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlaskConical } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, FlaskConical, Lock, Mail, User } from "lucide-react";
 
 export default function Register(){
     const [formData, setFormData] = useState({
@@ -10,6 +10,26 @@ export default function Register(){
 
     })
     const [showPassword, setShowPassword] = useState(false);
+
+    const handleChange = (e) => {
+        const{name, value} = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }))
+    }
+    const handleSubmit = (e) =>{
+        e.preventDefault();
+        if(formData.password.length < 8){
+            alert("Password Must be at least 8 Charachters");
+            return;
+        }
+        if (formData.password !== formData.confirmPassword){
+            alert("Passwords do not match");
+            return;
+        }
+        console.log("[REGISTER]", formData);
+    }
 
     return(
         <div className="min-h-screen bg-[#f8faf9] flex items-center justify-center p-4 font-sans text-slate-800">
