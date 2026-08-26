@@ -15,7 +15,6 @@ export default function SideNavLayout({children, user, notifications = []}){
     {label: 'Equipment Condition', path: '/equipment', icon: Wrench},
     {label: 'Profile', path: '/profile', icon: User},
     ];
-
     return(
         <div className="flex min-h-screen bg-[#f8faf9] text-slate-800">
             {/* navigation  */}
