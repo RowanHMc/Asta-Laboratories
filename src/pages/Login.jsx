@@ -37,7 +37,7 @@ export default function Login() {
               className={`w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-md mb-3 transition-colors ${
                 isAdmin ? "bg-[#04392b]" : "bg-[#064e3b]"
               }`}>
-                <FlaskConical className="w-6 mt-4"/>
+                <FlaskConical className="w-6 h-6"/>
               </div> 
             <h1 className="text-xl font-bold tracking-tight text-slate-900">
               ASTA LABS
