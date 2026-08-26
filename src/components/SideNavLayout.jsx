@@ -93,7 +93,7 @@ export default function SideNavLayout({children, user, notifications = []}){
         <div className="flex-1 flex flex-col min-w-0">
           <header className="bg-white border-b border-slate-200 px-6 py-3 sticky top-0 z-30 flex items-center justify-between">
           <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-            {navItems.find(item => item.path === location.pathname)?.label || 'Portal'}
+            {navItems.find(item => item.path === location.pathname)?.label || 'Research Portal'}
           </div>
 
           <div className="flex items-center gap-4">
