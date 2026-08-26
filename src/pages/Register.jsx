@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { ArrowRight, Eye, EyeOff, FlaskConical, Lock, Mail, User } from "lucide-react";
 
 export default function Register(){
+   
     const [formData, setFormData] = useState({
         fullName : "",
         email: "",
@@ -10,6 +12,7 @@ export default function Register(){
 
     })
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const handleChange = (e) => {
         const{name, value} = e.target;
@@ -149,7 +152,7 @@ export default function Register(){
 
           <button
             type="submit"
-            className="w-full mt-2 py-2.5 px-4 bg-[#064e3b] hover:bg-[#04392b] text-white text-sm font-semibold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2"
+            className="w-full mt-2 py-2.5 px-4 bg-[#064e3b] hover:bg-[#589e8b] text-white text-sm font-semibold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2"
           >
             <span>Create Account</span>
             <ArrowRight className="w-4 h-4" />
@@ -158,13 +161,11 @@ export default function Register(){
         {/* footer link  */}
         <div className="mt-8 text-center text-xs text-slate-500">
           Already have an account?{" "}
-          <button
-            type="button"
-            onClick={onNavigateToLogin}
+         <Link to = "/login"
             className="font-semibold text-[#064e3b] hover:underline bg-transparent border-none cursor-pointer"
           >
             LogIn
-          </button>
+          </Link>
         </div>
             </div>
         </div>

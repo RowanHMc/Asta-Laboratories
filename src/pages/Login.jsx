@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ArrowRight, ChevronDown, Eye, EyeOff, FlaskConical, LayoutDashboard, Lock, Mail, Shield } from "lucide-react";
+import { Link } from "react-router-dom";
 
 
 export default function Login() {
@@ -153,12 +154,12 @@ export default function Login() {
           {/* footer link  */}
           <div className="mt-8 text-center text-xs text-slate-500">
             Don't have an account?{" "}
-            <a
-              href="#register"
+            <Link
+              to="/register"
               className="font-semibold text-[#064e3b] hover:underline"
             >
               Create Account
-            </a>
+            </Link>
           </div>
       </div>
     </div>
