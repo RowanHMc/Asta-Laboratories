@@ -232,6 +232,49 @@ return(
             </div>
           </div>
         </div>
+{/* schedules and deadlines  */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
+          <div>
+            <div className="border-b border-slate-100 pb-4 mb-4">
+              <h2 className="text-sm font-bold text-slate-900">Deadlines & Schedule</h2>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                Upcoming academic deadlines and lab bookings
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              {upcomingSchedule.map((item) => (
+                <div key={item.id} className="flex items-start gap-3.5 p-2 rounded-xl hover:bg-slate-50 transition-all">
+                  <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col items-center justify-center text-center shrink-0">
+                    <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider leading-none">
+                      {item.month}
+                    </span>
+                    <span className="text-sm font-black text-slate-900 leading-tight">
+                      {item.day}
+                    </span>
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="text-xs font-bold text-slate-900 truncate">{item.title}</h3>
+                      <span className={`text-[8px] font-extrabold px-1.5 py-0.5 rounded-md ${item.tagColor}`}>
+                        {item.tag}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-slate-400 mt-0.5 truncate">{item.subtitle}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        <div className="pt-4 border-t border-slate-100 mt-4">
+            <button className="w-full flex items-center justify-between text-xs font-bold text-slate-700 hover:text-[#064e3b] transition-all">
+              <span>View Full Schedule</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>  
+
     </div>
 
 
