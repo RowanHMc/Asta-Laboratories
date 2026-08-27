@@ -1,9 +1,9 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import './App.css'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import StudentDashboard from './components/StudentDashboard'
+import StudentDashboard from './pages/StudentDashboard'
 import SideNavLayout from './components/SideNavLayout'
 import LabBookings from './pages/LabBookings'
 import Experiments from './pages/Experiments'
@@ -18,7 +18,7 @@ function App() {
 
 useEffect(() => {
 
-}), [setNotifications]
+}, [setNotifications])
 
   return (
     <BrowserRouter>
