@@ -10,6 +10,7 @@ import Experiments from './pages/Experiments'
 import Results from './pages/Results'
 import Profile from './pages/Profile'
 import EquipmentCondition from './pages/EquipmentCondition'
+import Home from './pages/Home'
 
 function App() {
   const [user, setUser] = useState(null);
@@ -23,7 +24,9 @@ useEffect(() => {
     <BrowserRouter>
     <SideNavLayout user={user} notifications={notifications}>
     <Routes>
-        <Route path="/" element={<Dashboard />} />
+
+        <Route path="/" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/register" element={<Register/>} /> 
         <Route path="/login" element={<Login/>} /> 
         <Route path="/bookings" element={<LabBookings/>} /> 

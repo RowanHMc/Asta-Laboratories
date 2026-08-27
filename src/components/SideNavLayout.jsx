@@ -8,7 +8,9 @@ export default function SideNavLayout({children, user, notifications = []}){
     const location = useLocation();
 
     const navItems = [
-    {label: 'Dashboard', path: '/', icon: LayoutDashboard},
+
+    {label: 'Home', path: '/', icon: LayoutDashboard},
+    {label: 'Dashboard', path: '/Dashboard', icon: LayoutDashboard},
     {label: 'Lab Bookings', path: '/bookings', icon: CalendarCheck},
     {label: 'Experiments', path: '/experiments', icon: TestTube},
     {label: 'Results', path: '/results', icon: FileSpreadsheet},
