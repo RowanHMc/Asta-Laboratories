@@ -101,6 +101,57 @@ export default function AdminDashboard(){
         </div>
       </div>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        {/*Inventory Alerts */}
+        <div className="bg-emerald-50/50 border border-emerald-200/80 rounded-2xl p-4 shadow-xs">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">INVENTORY ALERTS</span>
+            <span className="text-[9px] font-extrabold bg-emerald-900 text-white px-2 py-0.5 rounded-md tracking-wider">
+              CRITICAL
+            </span>
+          </div>
+          <p className="text-3xl font-black text-slate-900 tracking-tight">14 Alerts</p>
+          <p className="text-[11px] text-emerald-800 font-semibold mt-1">
+            8 Depleting stock | 6 Near expiry
+          </p>
+        </div>
+
+        {/* Damages & Losses */}
+        <div className="bg-white border border-emerald-300 rounded-2xl p-4 shadow-xs">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">DAMAGES & LOSSES</span>
+          </div>
+          <p className="text-3xl font-black text-slate-900 tracking-tight">3 Incidents</p>
+          <p className="text-[11px] text-slate-500 font-medium mt-1">
+            2 Apparatus breakages reported
+          </p>
+        </div>
+
+        {/*Active Lab Sessions */}
+        <div className="bg-[#10b981] text-white rounded-2xl p-4 shadow-xs">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-bold text-emerald-100 uppercase tracking-wider">ACTIVE LAB SESSIONS</span>
+          </div>
+          <p className="text-3xl font-black tracking-tight">8 Active</p>
+          <p className="text-[11px] text-emerald-100 font-medium mt-1">
+            4 Chemistry | 3 Bio | 1 Physics
+          </p>
+        </div>
+
+        {/*Equipment Status */}
+        <div className="bg-[#04382a] text-white rounded-2xl p-4 shadow-xs">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-bold text-emerald-300/80 uppercase tracking-wider">EQUIPMENT STATUS</span>
+          </div>
+          <p className="text-3xl font-black tracking-tight">42 / 3</p>
+          <p className="text-[11px] text-emerald-200/80 font-medium mt-1">
+            Operational vs Maintenance
+          </p>
+        </div>
+
+      </div>
+
         </div>
     );
 };
