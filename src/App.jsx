@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import Dashboard from './pages/Dashboard'
+import StudentDashboard from './components/StudentDashboard'
 import SideNavLayout from './components/SideNavLayout'
 import LabBookings from './pages/LabBookings'
 import Experiments from './pages/Experiments'
@@ -26,7 +26,7 @@ useEffect(() => {
     <Routes>
 
         <Route path="/" element={<Home />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/student" element={<StudentDashboard />} />
         <Route path="/register" element={<Register/>} /> 
         <Route path="/login" element={<Login/>} /> 
         <Route path="/bookings" element={<LabBookings/>} /> 
