@@ -3,13 +3,12 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Eye, EyeOff, FlaskConical, Lock, Mail, User } from "lucide-react";
 
 export default function Register(){
-   const navigate = useNavigate();
+   
     const [formData, setFormData] = useState({
         fullName : "",
         email: "",
         password: "",
         confirmPassword: "", 
-        role: 'Student'
 
     })
     const [showPassword, setShowPassword] = useState(false);

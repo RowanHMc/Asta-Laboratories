@@ -11,7 +11,6 @@ import Results from './pages/Results'
 import Profile from './pages/Profile'
 import EquipmentCondition from './pages/EquipmentCondition'
 import Home from './pages/Home'
-import AdminDashboard from './pages/AdminDashboard'
 
 function App() {
   const [user, setUser] = useState(null);
@@ -28,7 +27,6 @@ useEffect(() => {
 
         <Route path="/" element={<Home />} />
         <Route path="/student" element={<StudentDashboard />} />
-        <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/register" element={<Register/>} /> 
         <Route path="/login" element={<Login/>} /> 
         <Route path="/bookings" element={<LabBookings/>} /> 
