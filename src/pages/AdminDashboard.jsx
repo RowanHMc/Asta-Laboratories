@@ -74,5 +74,33 @@ export default function AdminDashboard(){
     } 
     ];
 
+    return(
+        <div className="p-6 max-w-350 mx-auto space-y-6 bg-[#f8faf9] min-h-screen font-sans">
+            {/* filter bar and search bar */}
+        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveTab(cat)}
+              className={`text-xs font-semibold px-4 py-2 rounded-full transition-all ${
+                activeTab === cat
+                  ? 'bg-[#064e3b] text-white shadow-xs'
+                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+          <div className="flex items-center gap-3">
+          <button className="flex items-center gap-2 bg-[#064e3b] hover:bg-[#04382a] text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-xs transition-all">
+            <Plus className="w-4 h-4" />
+            <span>Create Session</span>
+          </button>
+        </div>
+      </div>
 
+        </div>
+    );
 };
