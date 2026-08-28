@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { auth, db } from '../firebase';
@@ -36,5 +36,26 @@ export function AuthProvider ({children}){
     setUserRole(null);
     return signOut(auth);
     };
+
+    // check for change and fetch roles
+    useEffect(() => {
+        const unsubScribe = onAuthStateChanged(auth, async (user) =>{
+            if (user){
+            setCurrentUser(user)
+            const docRef = doc(db, 'users', user.uid);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()){
+                setUserRole(docSnap.data().role);
+            }
+            }else{
+                setCurrentUser(null);
+                setUserRole(null);
+            }
+            setLoading(false);
+        });
+    },[])
+
+    
 
 }
