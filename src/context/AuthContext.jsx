@@ -11,5 +11,30 @@ export function AuthProvider ({children}){
   const [userRole, setUserRole] = useState(null);
   const [loading, setLoading] = useState(true); 
 
-  
+//   sign up and save info
+    const signup = async (email, password, fullname, role) => {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+      await setDoc(doc(db, 'users', user.uid), {
+      fullName,
+      email,
+      role, 
+      createdAt: new Date()
+    });  
+
+    setUserRole(role);
+    setCurrentUser(user);
+    return user;
+    };
+    // login
+    const login = (email, password) => {
+    return signInWithEmailAndPassword(auth, email, password);
+    };
+    // logout
+    const logout = () => {
+    setUserRole(null);
+    return signOut(auth);
+    };
+
 }
