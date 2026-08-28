@@ -3,8 +3,8 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, on
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { auth, db } from '../firebase';
 
-const Authcontext = createContext();
-export const useAuth = () => useContext(Authcontext);
+const AuthContext = createContext();
+export const useAuth = () => useContext(AuthContext);
 
 export function AuthProvider ({children}){
   const [currentUser, setCurrentUser] = useState(null);
@@ -12,7 +12,7 @@ export function AuthProvider ({children}){
   const [loading, setLoading] = useState(true); 
 
 //   sign up and save info
-    const signup = async (email, password, fullname, role) => {
+    const signup = async (email, password, fullName, role) => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
@@ -54,8 +54,20 @@ export function AuthProvider ({children}){
             }
             setLoading(false);
         });
+        return unsubScribe;
     },[])
 
-    
+   const value ={
+    currentUser,
+    userRole,
+    signup,
+    login,
+    logout
+   } 
+   return (
+    <AuthContext.Provider value={value}>
+      {!loading && children}
+    </AuthContext.Provider>
+   )
 
 }
