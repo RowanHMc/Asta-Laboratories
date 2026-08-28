@@ -1,5 +1,5 @@
 import { Bell, CalendarCheck, FileSpreadsheet, FlaskConical, LayoutDashboard, PanelLeftClose, PanelLeftOpen, TestTube, User, Wrench, X } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 export default function SideNavLayout({children, user, notifications = []}){

@@ -1,5 +1,5 @@
 import { AlertTriangle, ArrowRight, Calendar, Database, Plus } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 
 export default function AdminDashboard() {
   const [activeTab, setIsActiveTab] = useState("All");

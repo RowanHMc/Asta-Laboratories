@@ -39,7 +39,7 @@ export default function Login() {
         navigate("/student");
       }
     }catch (err){
-      setError("failed to login + err.message");
+      setError("failed to login:" + err.message);
     }finally{
       setLoading(false);
     }

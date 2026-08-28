@@ -1,4 +1,4 @@
-import React, { Activity } from "react";
+import { Activity } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, BookOpen, Database, FlaskConical, HelpCircle } from "lucide-react";
 
