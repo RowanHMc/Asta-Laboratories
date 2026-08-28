@@ -12,6 +12,7 @@ import Profile from './pages/Profile'
 import EquipmentCondition from './pages/EquipmentCondition'
 import Home from './pages/Home'
 import AdminDashboard from './pages/AdminDashboard'
+import { AuthProvider } from './context/AuthContext'
 
 function App() {
   const [user, setUser] = useState(null);
@@ -23,6 +24,7 @@ useEffect(() => {
 
   return (
     <BrowserRouter>
+    <AuthProvider>
     <SideNavLayout user={user} notifications={notifications}>
     <Routes>
 
@@ -39,6 +41,7 @@ useEffect(() => {
 
     </Routes>
     </SideNavLayout> 
+    </AuthProvider>
     </BrowserRouter>
   )
 }

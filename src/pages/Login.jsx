@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ArrowRight, ChevronDown, Eye, EyeOff, FlaskConical, LayoutDashboard, Lock, Mail, Shield } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate} from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 
 export default function Login() {
@@ -11,6 +12,11 @@ export default function Login() {
     password: "",
     rememberMe: false,
   });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const {login} = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const{name, value, type, checked} = e.target;
@@ -20,9 +26,23 @@ export default function Login() {
     }));
   }
 
-  const handleSubmit = (e) => {
-    e.prevenrDefault();
-    console.log(`[${portalType.toUpperCase()}LOGIN]`), formData;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setError("");
+      setLoading(true);
+      await login(formData.email, formData.password)
+
+      if (portalType === "admin"){
+        navigate("/admin")
+      } else{
+        navigate("/student");
+      }
+    }catch (err){
+      setError("failed to login + err.message");
+    }finally{
+      setLoading(false);
+    }
   }
 
   const isAdmin = portalType === "admin";
