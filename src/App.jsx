@@ -20,23 +20,51 @@ function App() {
 
 
   return (
-    <BrowserRouter>
-    <AuthProvider>
-    <SideNavLayout user={user} notifications={notifications}>
-    <Routes>
+  <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          {/* Public — Home is reachable by anyone and never shows the sidebar */}
+          <Route path="/" element={<Home />} />
 
-        <Route path="/student" element={<StudentDashboard />} />
-        <Route path="/bookings" element={<LabBookings/>} /> 
-        <Route path="/experiments" element={<Experiments/>} /> 
-        <Route path="/results" element={<Results/>} /> 
-        <Route path="/profile" element={<Profile/>} /> 
-        <Route path="/equipment" element={<EquipmentCondition/>} /> 
+          {/* Public-only — logged-in users are bounced to their dashboard */}
+          <Route
+            path="/login"
+            element={
+              <PublicOnlyRoute>
+                <Login />
+              </PublicOnlyRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicOnlyRoute>
+                <Register />
+              </PublicOnlyRoute>
+            }
+          />
 
-    </Routes>
-    </SideNavLayout> 
-    </AuthProvider>
+          {/* Authenticated — any signed-in role, wrapped in the sidebar shell */}
+          <Route element={<ProtectedRoute notifications={notifications} />}>
+            <Route path="/student" element={<StudentDashboard />} />
+            <Route path="/bookings" element={<LabBookings />} />
+            <Route path="/experiments" element={<Experiments />} />
+            <Route path="/results" element={<Results />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/equipment" element={<EquipmentCondition />} />
+          </Route>
+
+          {/* admin only */}
+          <Route element={<ProtectedRoute allowedRoles={["admin"]} notifications={notifications} />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+          </Route>
+
+          {/* Anything else falls back to Home */}
+          <Route path="*" element={<Home />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
