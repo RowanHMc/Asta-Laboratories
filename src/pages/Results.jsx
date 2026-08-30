@@ -5,8 +5,6 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase/config";
 import { ArrowLeft, Plus, Save, TestTube, Trash2 } from "lucide-react";
 
-
-
 export default function Results(){
     const {userProfile} = useAuth();
     const navigate = useNavigate();
