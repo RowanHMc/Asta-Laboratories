@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { updateProfile } from "firebase/auth";
 import { db } from "../firebase/config";
-import { Check, Mail, Save, User } from "lucide-react";
+import { Check, Mail, Save, Shield, User } from "lucide-react";
 
 const FIELD = "w-full p-2.5 text-xs bg-[#f8faf9] border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#064e3b]";
 const LABEL = "block text-xs font-semibold text-slate-600 mb-1";
@@ -95,7 +96,8 @@ useEffect(() => {
             <div>
               <label className={LABEL + " flex items-center justify-between"}>
                 Email Address
-                <span className="text-[10px] text-slate-400 font-normal flex items-center gap-1"><Shield className="w-3 h-3" /> Read Only</span>
+                <span className="text-[10px] text-slate-400 font-normal flex items-center gap-1">
+                  <Shield className="w-3 h-3" /> Read Only</span>
               </label>
               <div className="relative">
                 <input type="email" disabled value={currentUser?.email || ""} className="w-full p-2.5 text-xs bg-slate-100 border border-slate-200 rounded-lg text-slate-500 cursor-not-allowed font-mono" />
