@@ -33,11 +33,11 @@ export default function EquipmentCondition(){
 
     useEffect (() => {
         const q = query(collection(db, "equipment"), orderBy("createdAt", "desc"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs.map((doc) => ({
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+        setEquipmentList(snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      }));
+      })));
       setEquipmentList(items);
     });
     return () => unsubscribe();
