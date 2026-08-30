@@ -1,10 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './App.css'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import StudentDashboard from './pages/StudentDashboard'
-import SideNavLayout from './components/SideNavLayout'
 import LabBookings from './pages/LabBookings'
 import Experiments from './pages/Experiments'
 import Results from './pages/Results'
@@ -13,6 +12,8 @@ import EquipmentCondition from './pages/EquipmentCondition'
 import Home from './pages/Home'
 import AdminDashboard from './pages/AdminDashboard'
 import { AuthProvider } from './context/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
+import PublicOnlyRoute from './components/PublicOnlyRoute'
 
 function App() {
 
@@ -59,7 +60,7 @@ function App() {
             <Route path="/admin" element={<AdminDashboard />} />
           </Route>
 
-          {/* Anything else falls back to Home */}
+          {/* Anything else, back to Home */}
           <Route path="*" element={<Home />} />
         </Routes>
       </AuthProvider>

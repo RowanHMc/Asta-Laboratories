@@ -1,4 +1,4 @@
-import { AlertTriangle, Atom, Droplet, TestTube2 } from "lucide-react";
+import { AlertTriangle, ArrowRight, Atom, Calendar, Droplet, FileText, TestTube2 } from "lucide-react";
 
 
 export default function StudentDashboard(){
@@ -26,8 +26,8 @@ export default function StudentDashboard(){
     }, {
         id: 3,
         title: 'Organosynthesis',
-        subtitle: 'Terprne synthesis',
-        setion: 'Chem Lab',
+        subtitle: 'Terpene synthesis',
+        section: 'Chem Lab',
         time: '16 Hours Ago',
         status: 'Completed',
         statusColor: 'bg-amber-50 text-amber-700 border-amber-200',
@@ -220,7 +220,7 @@ return(
                     <div className="flex items-center gap-6 shrink-0">
                       <div className="hidden sm:block text-right">
                         <p className="text-xs font-semibold text-slate-700">{act.section}</p>
-                        <p className="text-[10px] text-slate-400">{act.elapsed}</p>
+                        <p className="text-[10px] text-slate-400">{act.time}</p>
                       </div>
                       <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border ${act.statusColor}`}>
                         {act.status}
