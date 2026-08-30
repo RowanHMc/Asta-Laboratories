@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { AlertTriangle, CheckCircle2, Plus, XCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Plus, Trash2, Wrench, XCircle } from "lucide-react";
+
+import { collection,addDoc, updateDoc, deleteDoc, doc,onSnapshot, query, orderBy, serverTimestamp } from "firebase/firestore";
 
 const STATUS_CONFIG= {
     perfect: {
