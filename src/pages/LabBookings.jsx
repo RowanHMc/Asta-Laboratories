@@ -36,6 +36,7 @@ export default function LabBookings() {
     try {
       await addDoc(collection(db, "lab_bookings"), {
         ...form,
+        studentUid: userProfile?.uid || "",
         studentName: userProfile?.displayName || userProfile?.email || "Student",
         studentEmail: userProfile?.email || "",
         status: "pending",
@@ -51,7 +52,11 @@ export default function LabBookings() {
   };
 
   const setStatus = (id, status) =>
-    updateDoc(doc(db, "lab_bookings", id), { status }).catch((err) => console.error("Failed to update status:", err));
+    updateDoc(doc(db, "lab_bookings", id), {
+      status,
+      reviewedAt: serverTimestamp(),
+      reviewedBy: userProfile?.email || "Administrator",
+    }).catch((err) => console.error("Failed to update status:", err));
 
   const rows = isAdmin ? bookings : bookings.filter((b) => b.studentEmail === userProfile?.email);
 

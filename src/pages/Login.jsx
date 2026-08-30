@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({ email: "", password: "", rememberMe: false });
+  const [formData, setFormData] = useState({ email: "", password: "", accountType: "student", rememberMe: false });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +27,7 @@ export default function Login() {
       setLoading(true);
       // login() looks the account's real role up in Firestore and returns
     
-      const role = await login(formData.email, formData.password);
+      const role = await login(formData.email, formData.password, formData.accountType);
       navigate(role === "admin" ? "/admin" : "/student", { replace: true });
     } catch (err) {
       setError("Failed to login: " + err.message);
@@ -57,6 +57,20 @@ export default function Login() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Sign in as</label>
+            <select
+              name="accountType"
+              value={formData.accountType}
+              onChange={handleChange}
+              className="w-full px-3 py-2.5 text-sm bg-[#f8faf9] border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#064e3b] focus:border-transparent transition-all"
+            >
+              <option value="student">Student</option>
+              <option value="admin">Administrator</option>
+            </select>
+            <p className="text-[10px] text-slate-400 mt-1">Your account’s assigned role is verified when you sign in.</p>
+          </div>
+
           <div>
             <label className="block text-xs font-semibold text-slate-600 mb-1.5">Email</label>
             <div className="relative">

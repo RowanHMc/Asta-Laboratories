@@ -1,9 +1,41 @@
-import { AlertTriangle, ArrowRight, Calendar, Database, Plus } from "lucide-react";
-import { useState } from "react";
+import { AlertTriangle, ArrowRight, Calendar, Check, Database, Plus, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { collection, doc, onSnapshot, orderBy, query, serverTimestamp, updateDoc } from "firebase/firestore";
+import { db } from "../firebase/config";
+import { useAuth } from "../context/AuthContext";
 
 export default function AdminDashboard() {
-  const [activeTab, setIsActiveTab] = useState("All");
-  const categories = ["All", "Chemistry", "Biology", "physics"];
+  const [activeTab, setActiveTab] = useState("All");
+  const [pendingBookings, setPendingBookings] = useState([]);
+  const [reviewingBookingId, setReviewingBookingId] = useState(null);
+  const { userProfile } = useAuth();
+  const categories = ["All", "Chemistry", "Biology", "Physics"];
+
+  useEffect(() => {
+    const bookingQuery = query(collection(db, "lab_bookings"), orderBy("createdAt", "desc"));
+    return onSnapshot(bookingQuery, (snapshot) => {
+      setPendingBookings(
+        snapshot.docs
+          .map((booking) => ({ id: booking.id, ...booking.data() }))
+          .filter((booking) => booking.status === "pending"),
+      );
+    });
+  }, []);
+
+  const reviewBooking = async (bookingId, status) => {
+    setReviewingBookingId(bookingId);
+    try {
+      await updateDoc(doc(db, "lab_bookings", bookingId), {
+        status,
+        reviewedAt: serverTimestamp(),
+        reviewedBy: userProfile?.email || "Administrator",
+      });
+    } catch (error) {
+      console.error("Unable to update booking status:", error);
+    } finally {
+      setReviewingBookingId(null);
+    }
+  };
 
   const recentActivity = [
     {
@@ -76,13 +108,12 @@ export default function AdminDashboard() {
 
   return (
     <div className="p-6 max-w-350 mx-auto space-y-6 bg-[#f8faf9] min-h-screen font-sans">
-      {/* filter bar and search bar */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           {categories.map((cat) => (
             <button
               key={cat}
-              onClick={() => setIsActiveTab(cat)}
+              onClick={() => setActiveTab(cat)}
               className={`text-xs font-semibold px-4 py-2 rounded-full transition-all ${
                 activeTab === cat
                   ? "bg-[#064e3b] text-white shadow-xs"
@@ -102,77 +133,86 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/*Inventory Alerts */}
         <div className="bg-emerald-50/50 border border-emerald-200/80 rounded-2xl p-4 shadow-xs">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-              INVENTORY ALERTS
-            </span>
-            <span className="text-[9px] font-extrabold bg-emerald-900 text-white px-2 py-0.5 rounded-md tracking-wider">
-              CRITICAL
-            </span>
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">INVENTORY ALERTS</span>
+            <span className="text-[9px] font-extrabold bg-emerald-900 text-white px-2 py-0.5 rounded-md tracking-wider">CRITICAL</span>
           </div>
-          <p className="text-3xl font-black text-slate-900 tracking-tight">
-            14 Alerts
-          </p>
-          <p className="text-[11px] text-emerald-800 font-semibold mt-1">
-            8 Depleting stock | 6 Near expiry
-          </p>
+          <p className="text-3xl font-black text-slate-900 tracking-tight">14 Alerts</p>
+          <p className="text-[11px] text-emerald-800 font-semibold mt-1">8 Depleting stock | 6 Near expiry</p>
         </div>
 
-        {/* Damages & Losses */}
         <div className="bg-white border border-emerald-300 rounded-2xl p-4 shadow-xs">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              DAMAGES & LOSSES
-            </span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">DAMAGES & LOSSES</span>
           </div>
-          <p className="text-3xl font-black text-slate-900 tracking-tight">
-            3 Incidents
-          </p>
-          <p className="text-[11px] text-slate-500 font-medium mt-1">
-            2 Apparatus breakages reported
-          </p>
+          <p className="text-3xl font-black text-slate-900 tracking-tight">3 Incidents</p>
+          <p className="text-[11px] text-slate-500 font-medium mt-1">2 Apparatus breakages reported</p>
         </div>
 
-        {/*Active Lab Sessions */}
         <div className="bg-[#10b981] text-white rounded-2xl p-4 shadow-xs">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-bold text-emerald-100 uppercase tracking-wider">
-              ACTIVE LAB SESSIONS
-            </span>
+            <span className="text-[10px] font-bold text-emerald-100 uppercase tracking-wider">ACTIVE LAB SESSIONS</span>
           </div>
           <p className="text-3xl font-black tracking-tight">8 Active</p>
-          <p className="text-[11px] text-emerald-100 font-medium mt-1">
-            4 Chemistry | 3 Bio | 1 Physics
-          </p>
+          <p className="text-[11px] text-emerald-100 font-medium mt-1">4 Chemistry | 3 Bio | 1 Physics</p>
         </div>
 
-        {/*Equipment Status */}
         <div className="bg-[#04382a] text-white rounded-2xl p-4 shadow-xs">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-bold text-emerald-300/80 uppercase tracking-wider">
-              EQUIPMENT STATUS
-            </span>
+            <span className="text-[10px] font-bold text-emerald-300/80 uppercase tracking-wider">EQUIPMENT STATUS</span>
           </div>
           <p className="text-3xl font-black tracking-tight">42 / 3</p>
-          <p className="text-[11px] text-emerald-200/80 font-medium mt-1">
-            Operational vs Maintenance
-          </p>
+          <p className="text-[11px] text-emerald-200/80 font-medium mt-1">Operational vs Maintenance</p>
         </div>
       </div>
 
+      <section className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
+        <div className="flex items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-3">
+          <div>
+            <h2 className="text-sm font-bold text-slate-900">Lab Booking Approvals</h2>
+            <p className="text-[11px] text-slate-400 mt-0.5">Student requests update in real time.</p>
+          </div>
+          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+            {pendingBookings.length} pending
+          </span>
+        </div>
+
+        <div className="divide-y divide-slate-100">
+          {pendingBookings.map((booking) => (
+            <div key={booking.id} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-bold text-slate-800">{booking.labName} <span className="font-normal text-slate-400">— {booking.bookingTime}</span></p>
+                <p className="text-[11px] text-slate-500 mt-0.5">{booking.studentName} · {booking.experiment}</p>
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <button
+                  onClick={() => reviewBooking(booking.id, "approved")}
+                  disabled={reviewingBookingId === booking.id}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 disabled:opacity-50"
+                >
+                  <Check className="w-3.5 h-3.5" /> Approve
+                </button>
+                <button
+                  onClick={() => reviewBooking(booking.id, "rejected")}
+                  disabled={reviewingBookingId === booking.id}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 disabled:opacity-50"
+                >
+                  <X className="w-3.5 h-3.5" /> Reject
+                </button>
+              </div>
+            </div>
+          ))}
+          {!pendingBookings.length && <p className="py-6 text-center text-xs text-slate-400">No lab bookings are waiting for approval.</p>}
+        </div>
+      </section>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* recent activity  */}
         <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-3">
             <div>
-              <h2 className="text-sm font-bold text-slate-900">
-                Recent Lab Activity
-              </h2>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                Live feed of bookings, incidents, and stock updates
-              </p>
+              <h2 className="text-sm font-bold text-slate-900">Recent Lab Activity</h2>
+              <p className="text-[11px] text-slate-400 mt-0.5">Live feed of bookings, incidents, and stock updates</p>
             </div>
             <button className="text-[11px] font-semibold text-slate-500 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-1 rounded-lg transition-all">
               Show All
@@ -183,38 +223,21 @@ export default function AdminDashboard() {
             {recentActivity.map((item) => {
               const IconComp = item.icon;
               return (
-                <div
-                  key={item.id}
-                  className="py-3 flex items-center justify-between gap-4 hover:bg-slate-50/50 rounded-xl px-2 transition-all"
-                >
+                <div key={item.id} className="py-3 flex items-center justify-between gap-4 hover:bg-slate-50/50 rounded-xl px-2 transition-all">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div
-                      className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${item.iconBg}`}
-                    >
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${item.iconBg}`}>
                       <IconComp className="w-4 h-4" />
                     </div>
                     <div className="truncate">
-                      <p className="text-xs font-bold text-slate-900 truncate">
-                        {item.title}
-                      </p>
-                      <p className="text-[10px] text-slate-400 truncate">
-                        {item.subtitle}
-                      </p>
+                      <p className="text-xs font-bold text-slate-900 truncate">{item.title}</p>
+                      <p className="text-[10px] text-slate-400 truncate">{item.subtitle}</p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-8 shrink-0">
-                    <span className="text-xs font-semibold text-slate-700 hidden sm:block w-32 truncate text-left">
-                      {item.personnel}
-                    </span>
-                    <span className="text-[10px] text-slate-400 w-16 text-right hidden sm:block">
-                      {item.timestamp}
-                    </span>
-                    <span
-                      className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border ${item.statusStyle}`}
-                    >
-                      {item.status}
-                    </span>
+                    <span className="text-xs font-semibold text-slate-700 hidden sm:block w-32 truncate text-left">{item.personnel}</span>
+                    <span className="text-[10px] text-slate-400 w-16 text-right hidden sm:block">{item.timestamp}</span>
+                    <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border ${item.statusStyle}`}>{item.status}</span>
                   </div>
                 </div>
               );
@@ -223,26 +246,16 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* equipment   */}
       <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
         <div>
           <div className="border-b border-slate-100 pb-4 mb-4">
-            <h2 className="text-sm font-bold text-slate-900">
-              Equipment Utilization
-            </h2>
-            <p className="text-[11px] text-slate-400 mt-0.5">
-              Operational capacity in current shift
-            </p>
+            <h2 className="text-sm font-bold text-slate-900">Equipment Utilization</h2>
+            <p className="text-[11px] text-slate-400 mt-0.5">Operational capacity in current shift</p>
           </div>
 
-          {/* Circular Gauge Placeholder Graphics */}
           <div className="flex justify-center my-6">
             <div className="relative w-36 h-36 flex items-center justify-center">
-              <svg
-                className="w-full h-full transform -rotate-90"
-                viewBox="0 0 36 36"
-              >
-                {/* Outer ring */}
+              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
                 <path
                   className="text-slate-100"
                   strokeWidth="3.5"
@@ -259,7 +272,6 @@ export default function AdminDashboard() {
                   fill="none"
                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                 />
-                {/* Inner ring */}
                 <path
                   className="text-emerald-500"
                   strokeDasharray="70, 100"
@@ -279,10 +291,7 @@ export default function AdminDashboard() {
                 <span className="font-bold text-[#064e3b]">88% Duty</span>
               </div>
               <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                <div
-                  className="bg-[#064e3b] h-full rounded-full"
-                  style={{ width: "88%" }}
-                ></div>
+                <div className="bg-[#064e3b] h-full rounded-full" style={{ width: "88%" }}></div>
               </div>
             </div>
 
@@ -292,25 +301,17 @@ export default function AdminDashboard() {
                 <span className="font-bold text-emerald-600">14/20 Runs</span>
               </div>
               <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                <div
-                  className="bg-emerald-500 h-full rounded-full"
-                  style={{ width: "70%" }}
-                ></div>
+                <div className="bg-emerald-500 h-full rounded-full" style={{ width: "70%" }}></div>
               </div>
             </div>
 
             <div>
               <div className="flex justify-between text-slate-800 mb-1">
                 <span>High-Temp Incubator</span>
-                <span className="font-bold text-emerald-700">
-                  29 Hours Active
-                </span>
+                <span className="font-bold text-emerald-700">29 Hours Active</span>
               </div>
               <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                <div
-                  className="bg-emerald-400 h-full rounded-full"
-                  style={{ width: "60%" }}
-                ></div>
+                <div className="bg-emerald-400 h-full rounded-full" style={{ width: "60%" }}></div>
               </div>
             </div>
           </div>

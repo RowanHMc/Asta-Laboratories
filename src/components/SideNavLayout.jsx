@@ -1,13 +1,14 @@
-import { Bell, CalendarCheck, FileSpreadsheet, FlaskConical, LayoutDashboard, PanelLeftClose, PanelLeftOpen, TestTube, User, Wrench, X} from "lucide-react";
+import { Bell, CalendarCheck, FileSpreadsheet, FlaskConical, LayoutDashboard, LogOut, PanelLeftClose, PanelLeftOpen, TestTube, User, Wrench, X} from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function SideNavLayout({children, notifications = []}){
     const[isCollapsed, setIsCollapsed] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const location = useLocation();
-    const {userProfile, userRole} = useAuth();
+    const navigate = useNavigate();
+    const {userProfile, userRole, logout} = useAuth();
 
     const dashboardPath = userRole === "admin" ? "/admin" : "/student";
 
@@ -19,6 +20,19 @@ export default function SideNavLayout({children, notifications = []}){
     {label: 'Equipment Condition', path: '/equipment', icon: Wrench},
     {label: 'Profile', path: '/profile', icon: User},
     ];
+
+    // Signs the user out and sends them back to the public Home page —
+    // without this, PublicOnlyRoute has no way to ever show /login or
+    // /register again once a session exists.
+    const handleLogout = async () => {
+      try {
+        await logout();
+        navigate("/", { replace: true });
+      } catch (err) {
+        console.error("Failed to log out:", err);
+      }
+    };
+
     return(
          <div className="flex min-h-screen bg-[#f8faf9] text-slate-800">
       {/* navigation */}
@@ -72,8 +86,21 @@ export default function SideNavLayout({children, notifications = []}){
           </nav>
         </div>
 
-        <div className="p-4 border-t border-slate-100 text-[11px] text-slate-400 text-center font-medium">
-          {!isCollapsed ? "ASTA LABS v2.4" : "v2.4"}
+        <div>
+          {/* Logout */}
+          <div className="p-3 border-t border-slate-100">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition-all"
+              title={isCollapsed ? "Log Out" : ""}
+            >
+              <LogOut className="w-4 h-4 shrink-0" />
+              {!isCollapsed && <span>Log Out</span>}
+            </button>
+          </div>
+          <div className="p-4 border-t border-slate-100 text-[11px] text-slate-400 text-center font-medium">
+            {!isCollapsed ? "ASTA LABS v2.4" : "v2.4"}
+          </div>
         </div>
       </aside>
 
@@ -109,6 +136,16 @@ export default function SideNavLayout({children, notifications = []}){
                 </p>
               </div>
             </div>
+
+            <div className="h-4 w-px bg-slate-200"></div>
+
+            <button
+              onClick={handleLogout}
+              className="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+              title="Log Out"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
           </div>
         </header>
 

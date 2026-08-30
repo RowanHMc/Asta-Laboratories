@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { AlertTriangle, CheckCircle2, Plus, Trash2, Wrench, XCircle } from "lucide-react";
-
+import { db } from "../firebase/config";
 import { collection,addDoc, updateDoc, deleteDoc, doc,onSnapshot, query, orderBy, serverTimestamp } from "firebase/firestore";
 
 const STATUS_CONFIG= {
@@ -34,11 +34,11 @@ export default function EquipmentCondition(){
     useEffect (() => {
         const q = query(collection(db, "equipment"), orderBy("createdAt", "desc"));
         const unsubscribe = onSnapshot(q, (snapshot) => {
-        setEquipmentList(snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })));
-      setEquipmentList(items);
+        const items = snapshot.docs.map((document) => ({
+          id: document.id,
+          ...document.data(),
+        }));
+        setEquipmentList(items);
     });
     return () => unsubscribe();
   }, [])

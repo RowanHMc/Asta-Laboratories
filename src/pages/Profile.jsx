@@ -16,19 +16,24 @@ export default function Profile(){
 
 useEffect(() => {
     if(!currentUser) return;
-    setForm((f) => ({
-        ...f,
-      displayName: userProfile?.displayName || currentUser.displayName || "",
-      photoURL: userProfile?.photoURL || currentUser.photoURL || "",
-    }));
-   getDoc(doc(db, "users", currentUser.uid))
+    let isMounted = true;
+
+    getDoc(doc(db, "users", currentUser.uid))
       .then((snap) => {
-        if (snap.exists()) {
-          const { department = "" } = snap.data();
-          setForm((f) => ({ ...f, department }));
+        if (isMounted) {
+          const { department = "" } = snap.exists() ? snap.data() : {};
+          setForm({
+            displayName: userProfile?.displayName || currentUser.displayName || "",
+            photoURL: userProfile?.photoURL || currentUser.photoURL || "",
+            department,
+          });
         }
       })
       .catch((err) => console.error("Error fetching user details:", err));
+
+    return () => {
+      isMounted = false;
+    };
   }, [currentUser, userProfile]); 
 
   const set = (key) => (e) => setForm((f) => ({...f, [key]: e.target.value}));

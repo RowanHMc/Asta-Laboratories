@@ -22,6 +22,30 @@ const PRESET_EXPERIMENTS = [
   },
 ];
 
+const cleanText = (text = "") => text.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+
+const toEuropePmcExperiment = (article) => {
+  const abstract = cleanText(article.abstractText);
+  const sourceId = article.pmcid || article.id;
+  const source = article.pmcid ? "PMC" : article.source;
+
+  return {
+    id: `europe-pmc-${source}-${sourceId}`,
+    title: cleanText(article.title) || "Untitled research article",
+    category: article.journalTitle || "Open-access research",
+    description: abstract || "No abstract was supplied by the source.",
+    equipmentNeeded: [],
+    reagents: [],
+    
+    procedure: abstract ? [abstract] : ["Open the source article to review its methodology."],
+    expectedResults: article.authorString
+      ? `Published by ${cleanText(article.authorString)}${article.pubYear ? ` (${article.pubYear})` : ""}.`
+      : "Open the source article to review its reported findings.",
+    sourceUrl: sourceId && source ? `https://europepmc.org/article/${source}/${sourceId}` : null,
+    sourceLabel: "Europe PMC open-access research",
+  };
+};
+
 export default function Experiments() {
   const { userProfile } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
@@ -30,6 +54,9 @@ export default function Experiments() {
   const [loadingHazards, setLoadingHazards] = useState(false);
   const [completedList, setCompletedList] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+  const [apiExperiments, setApiExperiments] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState("");
 
   useEffect(() => {
     const q = query(collection(db, "completed_experiments"), orderBy("completedAt", "desc"));
@@ -40,6 +67,11 @@ export default function Experiments() {
   }, []);
 
   const fetchHazards = async (reagentList) => {
+    if (!reagentList.length) {
+      setHazardData({});
+      return;
+    }
+
     setLoadingHazards(true);
     const fetchedHazards = {};
 
@@ -52,7 +84,7 @@ export default function Experiments() {
          fetchedHazards[reagent] = res.ok
           ? "Hazardous chemical — handle under fume hood with protective equipment."
           : "Standard laboratory precautions apply.";
-      } catch (err) {
+      } catch {
         fetchedHazards[reagent] = "Safety data unavailable.";
       }
     }
@@ -64,6 +96,47 @@ export default function Experiments() {
   const handleOpenExperiment = (exp) => {
     setSelectedExperiment(exp);
     fetchHazards(exp.reagents);
+  };
+
+  const handleSearch = async (event) => {
+    event.preventDefault();
+    const term = searchTerm.trim();
+
+    if (!term) {
+      setSearchError("Enter an experiment, technique, or research topic to search.");
+      return;
+    }
+
+    setIsSearching(true);
+    setSearchError("");
+
+    try {
+      const query = `TITLE_ABS:"${term.replace(/"/g, "")}" AND OPEN_ACCESS:Y`;
+      const response = await fetch(
+        `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=${encodeURIComponent(query)}&format=json&pageSize=6&resultType=core`,
+      );
+
+      if (!response.ok) {
+        throw new Error(`The research source returned ${response.status}.`);
+      }
+
+      const payload = await response.json();
+      const results = (payload.resultList?.result || []).map(toEuropePmcExperiment);
+
+      if (!results.length) {
+        setSearchError("No open-access research matched that search. Try a broader phrase.");
+        return;
+      }
+
+      setApiExperiments((current) => {
+        const existingIds = new Set(current.map((experiment) => experiment.id));
+        return [...current, ...results.filter((experiment) => !existingIds.has(experiment.id))];
+      });
+    } catch (error) {
+      setSearchError(error.message || "Unable to search the research source right now.");
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   const handleMarkAsDone = async (exp) => {
@@ -84,7 +157,7 @@ export default function Experiments() {
     }
   };
 
-  const filteredExperiments = PRESET_EXPERIMENTS.filter(
+  const filteredExperiments = [...PRESET_EXPERIMENTS, ...apiExperiments].filter(
     (exp) =>
       exp.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       exp.category.toLowerCase().includes(searchTerm.toLowerCase())
@@ -102,16 +175,27 @@ export default function Experiments() {
         </p>
       </div>
 
-      <div className="relative">
-        <Search className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+      <form onSubmit={handleSearch} className="space-y-2">
+        <div className="relative flex gap-2">
+          <Search className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
         <input
           type="text"
-          placeholder="Search experiments by name or category (e.g. Molecular Biology)..."
+          placeholder="Search open-access procedures and research (e.g. DNA extraction)..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full pl-10 pr-4 py-2.5 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#064e3b] shadow-sm"
         />
-      </div>
+          <button
+            type="submit"
+            disabled={isSearching}
+            className="px-4 py-2.5 bg-[#064e3b] hover:bg-[#04392b] text-white text-xs font-semibold rounded-xl shadow-sm disabled:opacity-60 whitespace-nowrap"
+          >
+            {isSearching ? "Searching..." : "Search source"}
+          </button>
+        </div>
+        {searchError && <p className="text-xs text-amber-700">{searchError}</p>}
+        <p className="text-[11px] text-slate-400">Live results are supplied by Europe PMC. Review the original article before performing any procedure.</p>
+      </form>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredExperiments.map((exp) => (
@@ -130,7 +214,7 @@ export default function Experiments() {
               onClick={() => handleOpenExperiment(exp)}
               className="mt-4 w-full py-2 px-3 bg-[#f8faf9] hover:bg-[#064e3b] text-[#064e3b] hover:text-white border border-[#064e3b]/20 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-colors"
             >
-              View Full Protocol & Hazards <ChevronRight className="w-3.5 h-3.5" />
+              {exp.sourceUrl ? "View Research Summary" : "View Full Protocol & Hazards"} <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
         ))}
@@ -179,26 +263,26 @@ export default function Experiments() {
                 <h4 className="font-bold text-slate-700 mb-2 flex items-center gap-1.5">
                   <FileText className="w-3.5 h-3.5 text-[#064e3b]" /> Equipment Needed
                 </h4>
-                <ul className="list-disc list-inside space-y-1 text-slate-600">
-                  {selectedExperiment.equipmentNeeded.map((eq, i) => (
-                    <li key={i}>{eq}</li>
-                  ))}
-                </ul>
+                {selectedExperiment.equipmentNeeded.length ? (
+                  <ul className="list-disc list-inside space-y-1 text-slate-600">
+                    {selectedExperiment.equipmentNeeded.map((eq, i) => <li key={i}>{eq}</li>)}
+                  </ul>
+                ) : <p className="text-slate-500">Review the source article for equipment details.</p>}
               </div>
 
               <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                 <h4 className="font-bold text-slate-700 mb-2 flex items-center gap-1.5">
                   <FlaskConical className="w-3.5 h-3.5 text-[#064e3b]" /> Required Reagents
                 </h4>
-                <ul className="list-disc list-inside space-y-1 text-slate-600">
-                  {selectedExperiment.reagents.map((r, i) => (
-                    <li key={i}>{r}</li>
-                  ))}
-                </ul>
+                {selectedExperiment.reagents.length ? (
+                  <ul className="list-disc list-inside space-y-1 text-slate-600">
+                    {selectedExperiment.reagents.map((r, i) => <li key={i}>{r}</li>)}
+                  </ul>
+                ) : <p className="text-slate-500">Review the source article for reagent details.</p>}
               </div>
             </div>
 
-            <div className="bg-amber-50 p-4 rounded-xl border border-amber-200 text-xs">
+            {selectedExperiment.reagents.length > 0 && <div className="bg-amber-50 p-4 rounded-xl border border-amber-200 text-xs">
               <h4 className="font-bold text-amber-800 mb-2 flex items-center gap-1.5">
                 <ShieldAlert className="w-4 h-4 text-amber-600" /> API Chemical Safety & Hazard Notes
               </h4>
@@ -213,10 +297,10 @@ export default function Experiments() {
                   ))}
                 </ul>
               )}
-            </div>
+            </div>}
 
             <div className="space-y-2 text-xs">
-              <h4 className="font-bold text-slate-800 text-sm">Step-by-Step Procedure</h4>
+              <h4 className="font-bold text-slate-800 text-sm">{selectedExperiment.sourceUrl ? "Research Summary" : "Step-by-Step Procedure"}</h4>
               <ol className="list-decimal list-inside space-y-1.5 text-slate-600">
                 {selectedExperiment.procedure.map((step, idx) => (
                   <li key={idx} className="leading-relaxed">
@@ -229,6 +313,11 @@ export default function Experiments() {
             <div className="bg-emerald-50/50 p-3.5 rounded-xl border border-emerald-100 text-xs">
               <h4 className="font-bold text-[#064e3b] mb-1">Expected Results</h4>
               <p className="text-slate-600">{selectedExperiment.expectedResults}</p>
+              {selectedExperiment.sourceUrl && (
+                <a href={selectedExperiment.sourceUrl} target="_blank" rel="noreferrer" className="inline-block mt-2 font-semibold text-[#064e3b] hover:underline">
+                  Read the full methodology on {selectedExperiment.sourceLabel} ↗
+                </a>
+              )}
             </div>
 
             <div className="flex items-center justify-end gap-3 border-t border-slate-100 pt-4">

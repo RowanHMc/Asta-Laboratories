@@ -4,8 +4,9 @@ import SideNavLayout from "./SideNavLayout";
 
 export default function ProtectedRoute({allowedRoles, notifications = [] }) {
   const { currentUser, userRole} = useAuth();
-  const location = useLocation
-      if (!currentUser) {
+  const location = useLocation();
+
+  if (!currentUser) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
