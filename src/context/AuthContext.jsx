@@ -1,20 +1,39 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { createUserWithEmailAndPassword,signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/config";
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
+// predefined admin account. only this emails are assigned admin
+const ADMIN_EMAILS = ["admin@astalabs.org"];
+
 export function AuthProvider ({children}){
   const [currentUser, setCurrentUser] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [loading, setLoading] = useState(true); 
 
-//   sign up and save info
-    const signup = async (email, password, fullName, role) => {
+const applyProfile = (user, data) => {
+    const role = ADMIN_EMAILS.includes(user.email) ? "admin" : data?.role || "student";
+    const profile = {
+      uid: user.uid,
+      email: user.email,
+      displayName: data?.fullName || user.displayName || "",
+      photoURL: data?.photoURL || user.photoURL || "",
+      role,
+    };
+    setUserProfile(profile);
+    setUserRole(role);
+    return role;   
+}
+
+//   sign up and save info, sign in always takes student role. a
+    const signup = async (email, password, fullName) => {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
+        const role = ADMIN_EMAILS.includes(email) ? "admin" : "student";
 
       await setDoc(doc(db, 'users', user.uid), {
       fullName,
@@ -22,55 +41,56 @@ export function AuthProvider ({children}){
       role, 
       createdAt: new Date()
     });  
-
-    setUserRole(role);
+  
     setCurrentUser(user);
-    return user;
+    applyProfile(user, {fullName, role})
+    return role;
     };
-    // login
-    const login = (email, password) => {
-    return signInWithEmailAndPassword(auth, email, password);
+    // login - ftch details from firestore
+    const login = async (email, password) => {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        const docSnap = await getDoc(doc(db, "users", user.uid));
+        const data = docSnap.exists() ? docSnap.data() : null;
+        setCurrentUser(user);
+        return applyProfile(user, data)
     };
     // logout
     const logout = () => {
     setUserRole(null);
+    setUserProfile(null);
+    setCurrentUser(null);
     return signOut(auth);
     };
 
     // check for change and fetch roles
  // check for change and fetch roles
     useEffect(() => {
-        const unsubScribe = onAuthStateChanged(auth, async (user) =>{
+        const unsubscribe = onAuthStateChanged(auth, async (user) =>{
             if (user){
-                setCurrentUser(user); //[cite: 2]
+                setCurrentUser(user);
+                const docSnap = await getDoc(doc(db, "users", user.uid));
+                applyProfile(user, docSnap.exists() ? docSnap.data() : null);
                 
-                try {
-                    const docRef = doc(db, 'users', user.uid); //[cite: 2]
-                    const docSnap = await getDoc(docRef); //[cite: 2]
-
-                    if (docSnap.exists()){ //[cite: 2]
-                        setUserRole(docSnap.data().role); //[cite: 2]
-                    }
-                } catch (error) {
-                    console.error("Failed to fetch user role (Client may be offline):", error);
-                }
             } else {
-                setCurrentUser(null); //[cite: 2]
-                setUserRole(null); //[cite: 2]
+                setCurrentUser(null); 
+                setUserProfile(null);
+                setUserRole(null);
             }
-            setLoading(false); //[cite: 2]
+            setLoading(false); 
         });
-        
-        return unsubScribe; //[cite: 2]
+        return unsubscribe;
     }, [])
 
    const value ={
     currentUser,
+    userProfile,
     userRole,
+    loading,
     signup,
     login,
     logout
-   } 
+   }; 
    return (
     <AuthContext.Provider value={value}>
       {!loading && children}
