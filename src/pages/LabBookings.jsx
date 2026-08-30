@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { addDoc, collection, doc, onSnapshot, orderBy, query, serverTimestamp, updateDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../firebase/config";
 import { Check, FlaskConical, Send, ShieldCheck, X } from "lucide-react";
 
 const STATUS_STYLE = {

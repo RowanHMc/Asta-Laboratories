@@ -15,12 +15,9 @@ import AdminDashboard from './pages/AdminDashboard'
 import { AuthProvider } from './context/AuthContext'
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [notifications, setNotifications] = useState([]);
 
-useEffect(() => {
+  const [notifications] = useState([]);
 
-}, [setNotifications])
 
   return (
     <BrowserRouter>
@@ -28,11 +25,7 @@ useEffect(() => {
     <SideNavLayout user={user} notifications={notifications}>
     <Routes>
 
-        <Route path="/" element={<Home />} />
         <Route path="/student" element={<StudentDashboard />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/register" element={<Register/>} /> 
-        <Route path="/login" element={<Login/>} /> 
         <Route path="/bookings" element={<LabBookings/>} /> 
         <Route path="/experiments" element={<Experiments/>} /> 
         <Route path="/results" element={<Results/>} /> 

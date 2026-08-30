@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+import { createUserWithEmailAndPassword,signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { auth, db } from '../firebase';
+import { auth, db } from "../firebase/config";
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
@@ -38,24 +38,31 @@ export function AuthProvider ({children}){
     };
 
     // check for change and fetch roles
+ // check for change and fetch roles
     useEffect(() => {
         const unsubScribe = onAuthStateChanged(auth, async (user) =>{
             if (user){
-            setCurrentUser(user)
-            const docRef = doc(db, 'users', user.uid);
-            const docSnap = await getDoc(docRef);
+                setCurrentUser(user); //[cite: 2]
+                
+                try {
+                    const docRef = doc(db, 'users', user.uid); //[cite: 2]
+                    const docSnap = await getDoc(docRef); //[cite: 2]
 
-            if (docSnap.exists()){
-                setUserRole(docSnap.data().role);
+                    if (docSnap.exists()){ //[cite: 2]
+                        setUserRole(docSnap.data().role); //[cite: 2]
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch user role (Client may be offline):", error);
+                }
+            } else {
+                setCurrentUser(null); //[cite: 2]
+                setUserRole(null); //[cite: 2]
             }
-            }else{
-                setCurrentUser(null);
-                setUserRole(null);
-            }
-            setLoading(false);
+            setLoading(false); //[cite: 2]
         });
-        return unsubScribe;
-    },[])
+        
+        return unsubScribe; //[cite: 2]
+    }, [])
 
    const value ={
     currentUser,

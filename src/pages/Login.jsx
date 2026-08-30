@@ -143,43 +143,20 @@ export default function Login() {
             
             <div className="flex items-center justify-between text-xs pt-1">
               <label className="flex items-center gap-2 cursor-pointer text-slate-500">
-                <input
-                  type="checkbox"
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleChange}
-                  className="rounded border-slate-300 text-[#064e3b] focus:ring-[#064e3b]"
-                />
+                <input type="checkbox" name="rememberMe" checked={formData.rememberMe} onChange={handleChange} className="rounded border-slate-300 text-[#064e3b] focus:ring-[#064e3b]" />
                 Remember Me
               </label>
-              <a
-                href="#forgot"
-                className="font-semibold text-[#064e3b] hover:underline"
-              >
-                Forgot password?
-              </a>
+              <a href="#forgot" className="font-semibold text-[#064e3b] hover:underline">Forgot password?</a>
             </div>
 
-            <button
-              type="submit"
-              className="w-full mt-2 py-2.5 px-4 bg-[#064e3b] hover:bg-[#04392b] text-white text-sm font-semibold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2"
-            >
-              <span>
-                {isAdmin ? "Sign In to Console" : "Sign In to Portal"}
-              </span>
+            <button type="submit" className="w-full mt-2 py-2.5 px-4 bg-[#064e3b] hover:bg-[#04392b] text-white text-sm font-semibold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2">
+              <span>{isAdmin ? "Sign In to Console" : "Sign In to Portal"}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
-            
           </form>
           {/* footer link  */}
           <div className="mt-8 text-center text-xs text-slate-500">
-            Don't have an account?{" "}
-            <Link
-              to="/register"
-              className="font-semibold text-[#064e3b] hover:underline"
-            >
-              Create Account
-            </Link>
+            Don't have an account?{" "}<Link to="/register" className="font-semibold text-[#064e3b] hover:underline">Create Account</Link>
           </div>
       </div>
     </div>

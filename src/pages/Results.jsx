@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../firebase/config";
 import { ArrowLeft, Plus, Save, TestTube, Trash2 } from "lucide-react";
 
 

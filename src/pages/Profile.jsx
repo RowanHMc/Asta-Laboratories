@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../firebase/config";
 import { Check, Mail, Save, User } from "lucide-react";
 
 const FIELD = "w-full p-2.5 text-xs bg-[#f8faf9] border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#064e3b]";
