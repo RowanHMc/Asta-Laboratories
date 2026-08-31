@@ -76,7 +76,7 @@ export default function Register() {
                 type="text"
                 name="fullName"
                 required
-                placeholder="e.g. Dr. Jane Doe"
+                placeholder="e.g. Dr. Kihahu"
                 value={formData.fullName}
                 onChange={handleChange}
                 className="w-full pl-10 pr-4 py-2.5 text-sm bg-[#f8faf9] border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#064e3b] focus:border-transparent transition-all"
@@ -92,7 +92,7 @@ export default function Register() {
                 type="email"
                 name="email"
                 required
-                placeholder="s.jenkins@university.edu"
+                placeholder="Dennis@university.edu"
                 value={formData.email}
                 onChange={handleChange}
                 className="w-full pl-10 pr-4 py-2.5 text-sm bg-[#f8faf9] border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#064e3b] focus:border-transparent transition-all"
@@ -109,7 +109,7 @@ export default function Register() {
                 name="password"
                 required
                 minLength={8}
-                placeholder="••••••••"
+                placeholder="********"
                 value={formData.password}
                 onChange={handleChange}
                 className="w-full pl-10 pr-10 py-2.5 text-sm bg-[#f8faf9] border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#064e3b] focus:border-transparent transition-all"
@@ -133,7 +133,7 @@ export default function Register() {
                 name="confirmPassword"
                 required
                 minLength={8}
-                placeholder="••••••••"
+                placeholder="*******"
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 className="w-full pl-10 pr-10 py-2.5 text-sm bg-[#f8faf9] border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#064e3b] focus:border-transparent transition-all"
