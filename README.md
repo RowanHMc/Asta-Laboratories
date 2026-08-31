@@ -13,51 +13,28 @@ Asta Labs Management System addresses these issues by delivering a centralized, 
 * TailwindCss
 * Vs Code
 
-## PROJECT STRUCTURE
-Asta-Labs/
-├── public/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   │   ├── ProtectedRoute.jsx
-│   │   ├── PublicOnlyRoute.jsx
-│   │   └── SideNavLayout.jsx
-│   ├── context/
-│   │   └── AuthContext.jsx
-│   ├── firebase/
-│   │   └── config.js
-│   ├── pages/
-│   │   ├── AdminDashboard.jsx
-│   │   ├── EquipmentControl.jsx
-│   │   ├── Experiments.jsx
-│   │   ├── Home.jsx
-│   │   ├── LabBookings.jsx
-│   │   ├── Login.jsx
-│   │   ├── Profile.jsx
-│   │   ├── Register.jsx
-│   │   ├── Results.jsx
-│   │   └── StudentDashboard.jsx
-│   ├── App.css
-│   ├── App.jsx
-│   ├── index.css
-│   └── main.jsx
-├── .env
-├── .gitignore
-├── eslint.config.js
-├── index.html
-└── package.json
+
+## AUTHENTICATION
+Firebase Authentication is used for user registration and login.
+
+User information is stored in Firebase Firestore. Different account types are assigned different roles so that students and the technicians can access their respective dashboards with unique features.
 
 ## POWERPOINT LINK
 https://1drv.ms/p/c/8861886c4d95b6cd/IQCgT-GWwgefRZqPg4NxYooeAaUxPjaRVeodHC3xBnj2eSc?e=Dk755o
 
 
+## FIGMA DESIGH LINK
+https://www.figma.com/design/IYjzXXIce05gCpdjEn5TwO/Asta-labs?node-id=0-1&p=f&t=RE8JeZ7nEdLiJ59g-0
 
-# React + Vite
+## FUTURE ENHANCEMENTS
+* Admin and user interaction
+* Inventory foe lab Apparatus and equipment.
+* Report generation for experiments done.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+## Contributions
+* The project is currentlu being developed and contributins are welcome
+* You can Frok the repo and create a new branch, make your changes and commit your work and oush to branch.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
+## Author
+Rowan Hadegu.
