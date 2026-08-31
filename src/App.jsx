@@ -27,7 +27,7 @@ function App() {
           {/* Public — Home is reachable by anyone and never shows the sidebar */}
           <Route path="/" element={<Home />} />
 
-          {/* Public-only — logged-in users are bounced to their dashboard */}
+          {/* Public-only — logged-in users are taken to dashboard */}
           <Route
             path="/login"
             element={
@@ -45,7 +45,7 @@ function App() {
             }
           />
 
-          {/* Authenticated — any signed-in role, wrapped in the sidebar shell */}
+          {/* Authenticated  */}
           <Route element={<ProtectedRoute notifications={notifications} />}>
             <Route path="/student" element={<StudentDashboard />} />
             <Route path="/bookings" element={<LabBookings />} />
